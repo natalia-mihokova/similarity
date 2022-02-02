@@ -41,3 +41,6 @@ htmlcov
 .coverage
 MANIFEST
 .ipynb_checkpoints
+
+# Figures
+*.png

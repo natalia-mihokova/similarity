@@ -5,7 +5,7 @@ Each distribution comes with a pdf and cdf, sampled at points as specified in th
 Additional parameters are required as specified for each distribution.
 
 supported distributions:
--Chi^2
+-Chi2
 -Gaussian
 -Lognormal
 -Maxwellian
@@ -99,9 +99,13 @@ class Cauchy():
 
 
 class Chi2():
-    def __init__(self,xvals,k=1):
+    """
 
-        self.xvals = xvals
+    https://en.wikipedia.org/wiki/Chi-squared_distribution
+    """
+    def __init__(self,xvals,k=1.):
+
+        self.xvals = xvals[xvals>0]
         self.dx    = xvals[1]-xvals[0]
         self.k     = k
 
@@ -113,7 +117,7 @@ class Chi2():
 
         norm = 2.**(self.k/2.)*gamma(self.k/2.)
 
-        tpdf = (self.xvals**(self.k/2. - 1) * np.exp(-self.xvals/2.))/norm
+        tpdf = (self.xvals**(self.k/2. - 1.) * np.exp(-self.xvals/2.))/norm
 
         self.pdf = tpdf#/np.nansum(self.dx*tpdf)
 
@@ -156,24 +160,39 @@ class Gaussian():
 
 
 class Lognormal():
+    """
+    the lognormal distribution.
+    only defined for x>0!
+    https://en.wikipedia.org/wiki/Log-normal_distribution
+    """
     def __init__(self,xvals,mu=0.,sigma=1.):
 
-        self.xvals = xvals
+        self.xvals = xvals[xvals>0]
         self.mu    = mu
         self.sigma = sigma
 
         self._lognormal_pdf()
+        self._lognormal_cdf()
 
     def _lognormal_pdf(self):
-        """gaussian distribution pdf"""
-        self.pdf (1./self.sigma/self.xvals/np.sqrt(2.*np.pi)) * np.exp(-0.5*((np.log(self.xvals)-self.mu)/self.sigma)**2.)
+        """lognormal distribution pdf"""
+        norm = (1./self.sigma/self.xvals/np.sqrt(2.*np.pi))
+        self.pdf = norm * np.exp(-0.5*((np.log(self.xvals)-self.mu)/self.sigma)**2.)
 
+    def _lognormal_cdf(self):
+        """lognormal cdf"""
+        norm = 0.5
+
+        self.cdf =  norm * (1.+erf((np.log(self.xvals)-self.mu)/(self.sigma*np.sqrt(2.))))
 
 
 class Maxwellian():
+    """The Maxwellian distribution.
+    enforce samples > 0.
+    """
     def __init__(self,xvals,sigma=1.):
 
-        self.xvals = xvals
+        self.xvals = xvals[xvals>0]
         self.sigma = sigma
 
         self._maxwellian_pdf()
