@@ -22,6 +22,11 @@ To add more, one may build a new class, which must have the following properties
 
 todo:
 -extend to 2d?
+-add Student's t-distribution (the generalised normal curve at small observation number [becomes normal with infinite observations], https://en.wikipedia.org/wiki/Student%27s_t-distribution)
+-add discussion of sigmoid curves generically (logistic curve is one example), https://en.wikipedia.org/wiki/Sigmoid_function, add erf
+-add discussion of Maxwell-Boltzmann connection to Chi distribution (they are the same if Chi has 3 degrees of freedom and the scale parameter for MB is a = \sqrt{kT/m} for the gas case.)
+-add discussion of Chi^2 connection to Chi distribution (https://en.wikipedia.org/wiki/Chi_distribution)
+-add discussion of the gamma distribution (generalisation of exponential and chi-squared distribution)
 
 """
 
