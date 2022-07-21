@@ -250,3 +250,35 @@ class Normal():
        self.sigma = G.sigma
        self.pdf   = G.pdf
        self.cdf   = G.cdf
+       
+class Poisson():
+    """
+    Poisson distribution.
+    
+    xvals only > or =  0  
+    
+    The Poisson distribution is a special case of the Binomial distribution ("Hit 
+    and Miss problem"), where the probability of each event tends to 0 and the 
+    number of trials tends to infinity. 
+    
+    It expresses the probability of given number of events happening in a set 
+    interval of time.
+    
+        Methods:
+    __init__
+    _poisson_pdf - computes the probability density function of the Poisson distribution
+    _poisson_cdf - computes the cumulative density function of the Poisson distribution
+    """
+    def __init__(self,xvals,mu=0.,sigma=1.):
+        self.xvals = xvals[xvals>0]
+        self.mu    = mu
+
+        self._poisson_pdf()
+        self._poisson_cdf()
+
+    def _poisson_pdf(self):
+        self.pdf = (np.exp(- self.mu) * self.mu **(self.xvals)) / np.math.factorial(self.xvals)
+            
+    def _poisson_cdf(self):
+        self.cdf = gammaincc(np.floor(self.xvals), self.mu) / np.math.factorial(np.floor(self.xvals))
+        
