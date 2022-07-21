@@ -13,6 +13,7 @@ supported distributions:
 -Normal (alias for Gaussian)
 -Cauchy
 -Lorentzian (alias for Cauchy)
+-Poisson
 
 To add more, one may build a new class, which must have the following properties:
 -xvals = the 1d sample points
@@ -77,8 +78,17 @@ class Lorentzian():
 
 
 class Cauchy():
-    """the Cauchy (Lorentz) distribution
-    https://en.wikipedia.org/wiki/Cauchy_distribution
+    """
+    The Cauchy (Lorentzian) distribution
+    
+    This distribution is also bell-shaped, it follows a power law form of y ~ x^(-2)
+    
+    It has no mean, no variance nor higher moments. 
+
+        Methods:
+    __init__
+    _cauchy_pdf - computes the probability density function of the Cauchy distribution
+    _cauchy_cdf - computes the cumulative density function of  the Cauchy distribution
     """
     def __init__(self,xvals,gamma=1.,x0=0.):
         self.xvals = xvals
@@ -139,15 +149,27 @@ class Chi2():
 
 
 class Gaussian():
-    """the OG. The distribution of a random variable with unknown distribution.
-
-    owes to the central limit theorem: under some conditions, the average of many sample of a random variable,
-    with finite mean and variance (which is itself a random variable), will converge to a normal distribution
-    as the number of samples increases.
-
+    """
+    Gaussian distribution (Normal distribution)
+    
+    Distribution important in social and natural sciences to represent real-valued
+    random variables with unknown distribution.
+    
+    According to Central Limit Theorem under some conditions, the average of 
+    many sample of a random variable, with finite mean and variance (which is 
+    itself a random variable), will tend towards a Gaussian distribution.
+    
+        Methods:
+    __init__
+    _gaussian_pdf - computes the probability density function of Gaussian
+    _gaussian_cdf - computes the cumulative density function of Gaussian
     """
     def __init__(self,xvals,mu=0.,sigma=1.):
-
+        """
+        :param xvals: an array of 1d sample points
+        :param mu: mean or expected value of the distribution
+        :param sigma: standard deviation
+        """
         self.xvals = xvals
         self.mu    = mu
         self.sigma = sigma
