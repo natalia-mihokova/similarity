@@ -32,7 +32,7 @@ todo:
 
 import numpy as np
 
-from scipy.special import erf,gamma,gammainc
+from scipy.special import erf,gamma,gammainc, gammaincc
 
 
 class Logistic():
