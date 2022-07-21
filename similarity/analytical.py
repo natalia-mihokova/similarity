@@ -115,8 +115,15 @@ class Cauchy():
 
 class Chi2():
     """
-
-    https://en.wikipedia.org/wiki/Chi-squared_distribution
+    The Chi-squared distribution
+    
+    This distribution is most commonly used in the Chi-squared test of goodness
+    of fit of observed data to hypothetical distributions.
+    
+        Methods:
+    __init__
+    _chi2_pdf - computes the probability density function of the Chi2 distribution
+    _chi2_cdf - computes the cumulative density function of the Chi2 distribution
     """
     def __init__(self,xvals,k=1.):
 
