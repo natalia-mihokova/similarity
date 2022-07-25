@@ -13,6 +13,7 @@ supported distributions:
 -Normal (alias for Gaussian)
 -Cauchy
 -Lorentzian (alias for Cauchy)
+-Poisson
 
 To add more, one may build a new class, which must have the following properties:
 -xvals = the 1d sample points
@@ -32,7 +33,7 @@ todo:
 
 import numpy as np
 
-from scipy.special import erf,gamma,gammainc
+from scipy.special import erf,gamma,gammainc, gammaincc
 
 
 class Logistic():
@@ -77,8 +78,17 @@ class Lorentzian():
 
 
 class Cauchy():
-    """the Cauchy (Lorentz) distribution
-    https://en.wikipedia.org/wiki/Cauchy_distribution
+    """
+    The Cauchy (Lorentzian) distribution
+    
+    This distribution is also bell-shaped, it follows a power law form of y ~ x^(-2)
+    
+    It has no mean, no variance nor higher moments. 
+
+        Methods:
+    __init__
+    _cauchy_pdf - computes the probability density function of the Cauchy distribution
+    _cauchy_cdf - computes the cumulative density function of  the Cauchy distribution
     """
     def __init__(self,xvals,gamma=1.,x0=0.):
         self.xvals = xvals
@@ -105,8 +115,15 @@ class Cauchy():
 
 class Chi2():
     """
-
-    https://en.wikipedia.org/wiki/Chi-squared_distribution
+    The Chi-squared distribution
+    
+    This distribution is most commonly used in the Chi-squared test of goodness
+    of fit of observed data to hypothetical distributions.
+    
+        Methods:
+    __init__
+    _chi2_pdf - computes the probability density function of the Chi2 distribution
+    _chi2_cdf - computes the cumulative density function of the Chi2 distribution
     """
     def __init__(self,xvals,k=1.):
 
@@ -139,15 +156,27 @@ class Chi2():
 
 
 class Gaussian():
-    """the OG. The distribution of a random variable with unknown distribution.
-
-    owes to the central limit theorem: under some conditions, the average of many sample of a random variable,
-    with finite mean and variance (which is itself a random variable), will converge to a normal distribution
-    as the number of samples increases.
-
+    """
+    Gaussian distribution (Normal distribution)
+    
+    Distribution important in social and natural sciences to represent real-valued
+    random variables with unknown distribution.
+    
+    According to Central Limit Theorem under some conditions, the average of 
+    many sample of a random variable, with finite mean and variance (which is 
+    itself a random variable), will tend towards a Gaussian distribution.
+    
+        Methods:
+    __init__
+    _gaussian_pdf - computes the probability density function of Gaussian
+    _gaussian_cdf - computes the cumulative density function of Gaussian
     """
     def __init__(self,xvals,mu=0.,sigma=1.):
-
+        """
+        :param xvals: an array of 1d sample points
+        :param mu: mean or expected value of the distribution
+        :param sigma: standard deviation
+        """
         self.xvals = xvals
         self.mu    = mu
         self.sigma = sigma
@@ -250,3 +279,35 @@ class Normal():
        self.sigma = G.sigma
        self.pdf   = G.pdf
        self.cdf   = G.cdf
+       
+class Poisson():
+    """
+    Poisson distribution.
+    
+    xvals only > or =  0  
+    
+    The Poisson distribution is a special case of the Binomial distribution ("Hit 
+    and Miss problem"), where the probability of each event tends to 0 and the 
+    number of trials tends to infinity. 
+    
+    It expresses the probability of given number of events happening in a set 
+    interval of time.
+    
+        Methods:
+    __init__
+    _poisson_pdf - computes the probability density function of the Poisson distribution
+    _poisson_cdf - computes the cumulative density function of the Poisson distribution
+    """
+    def __init__(self,xvals,mu=0.,sigma=1.):
+        self.xvals = xvals[xvals>0]
+        self.mu    = mu
+
+        self._poisson_pdf()
+        self._poisson_cdf()
+
+    def _poisson_pdf(self):
+        self.pdf = (np.exp(- self.mu) * self.mu **(self.xvals)) / np.math.factorial(self.xvals)
+            
+    def _poisson_cdf(self):
+        self.cdf = gammaincc(np.floor(self.xvals), self.mu) / np.math.factorial(np.floor(self.xvals))
+        
