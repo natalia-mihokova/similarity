@@ -1,9 +1,14 @@
 """
-this file tests the basic distributions
+this file tests the basic KS implementation with some example data
 
 """
 import numpy as np
 import pkg_resources
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+
+# test the base classes? not needed unless implementing new features
+base_class_test = False
 
 # bring in the package itself
 import similarity
@@ -16,79 +21,100 @@ d2 = pkg_resources.resource_filename('similarity','data/LMC.evolved.galactocentr
 model1 = np.genfromtxt(d1,delimiter=';',skip_header=1)
 model2 = np.genfromtxt(d2,delimiter=';',skip_header=1)
 
-# now bring in the default measurement
-from similarity import similarity
-
+# make speed distributions
 vtot1 = np.sqrt(model1[:,3]*model1[:,3] + model1[:,4]*model1[:,4] + model1[:,5]*model1[:,5])
 vtot2 = np.sqrt(model2[:,3]*model2[:,3] + model2[:,4]*model2[:,4] + model2[:,5]*model2[:,5])
 
+# now bring in the default measurement techniques
+from similarity import similarity
+
+# run the base comparison between two samples: the two-sample KS test.
+#   this will generate three KS statistics (two-sided, greater, less [compare to scipy])
+#   and return a p-value for significance (here, alpha)
 result = similarity.compare(vtot1,vtot2)
-print(result.ks,result.ksDp,result.ksDm,result.p1_bar)
+print("Summary statistics for the two distributions:")
+print("KSD={},KSD+={},KSD-={},pvalue={}".format(result.ks,result.ksDp,result.ksDm,result.p1_bar))
 
+# do a comparison to scipy?
+from scipy.stats import ks_2samp
 
-from similarity import empirical
-
-D1 = empirical.Distribution(vtot1)
-D2 = empirical.Distribution(vtot1*1.0001)
-
-#print(D1.cdf)
-
-empirical.match_distributions(D1,D2)
+res = ks_2samp(vtot1,vtot2,mode='exact')
+print("Scipy comparison:")
+print("KSD={},pvalue={}".format(res.statistic,res.pvalue))
+# the p-values don't quite match here -- why not?
 
 # test the calibration classes
+print("\n Moving to calibration exercises...")
 from similarity import calibrate
 
+# uncertainties intrinsic to one distribution
+# if we were missing some fraction of observations, how does the KS value change?
 C = calibrate.SingleTest(vtot1)
-print('uncertainty from subsampling 1:',C.uncertainty_subsample)
+print('Uncertainty from subsampling distribution 1:',C.uncertainty_subsample)
 
 C = calibrate.SingleTest(vtot2)
-print('uncertainty from subsampling 2:',C.uncertainty_subsample)
+print('Uncertainty from subsampling distribution 2:',C.uncertainty_subsample)
+# WARNING: these values are not repeatable. We might need to consider even more samples
 
+# uncertainties intrinsic to two distributions
 C = calibrate.DoubleTest(vtot1,vtot2,verbose=1)
-print('baseline KS',C.base_ks)
-print('uncertainty from constructing matched CDFs:',C.uncertainty_spacing)
-print('minimum value when shifting CDFs:',C.uncertainty_shifting)
 
-# test the raw KS classes
-from similarity import ks
+# if we used different bins to construct the CDFs, how much uncertainty do we gain?
+print('Uncertainty from constructing matched CDFs:',C.uncertainty_spacing)
 
-K = ks.KS(D1.hcdf,D2.hcdf)
+# test the hypothesis that the distributions might just be shifted relative to each other:
+# what is the minimum KS value we can get simply by shifting?
+print('Minimum KS value when shifting CDFs:',C.uncertainty_shifting)
 
-print(K.ks)
-#K._significance()
-print(K.alpha)
-print('p1bar',K.p1_bar)
 
-print(K._h_lam(0.07,imax=1000))
-#print('hlam',K.p1_bar)
 
 # bring in some different analytical distributions
 from similarity.analytical import *
 
-velvals = np.linspace(0.,800,1000)
+# now we'd like to test the standard halo model
+velvals = np.linspace(0.,800,1000) # in km/s
 vdisp = 117
 
+# realise a 1d Maxwellian velocity distribution (would work if dimensions were symmetric!)
 maxwellian_shm = Maxwellian(velvals,vdisp)
 
+# realise a 3d gaussian with (U,V,W) velocity offsets applied for the solar neighborhood
 shm = MultiGaussian(velvals)
-shm.trivariate_gaussian_pdf(vdisp*np.sqrt(3),-100.)
 shm.trivariate_gaussian_pdf(vdisp*np.sqrt(3),cen1=11.1,cen2=229.+12.24,cen3=7.25)
 
-#mcdf = make_cdf(velvals,maxwellian(velvals,vdisp))
-#plt.plot(maxwellian_shm.xvals,maxwellian_shm.pdf)
-#plt.plot(shm.xvals,shm.pdf)
 
+# make a plot?
+plt.figure(figsize=(4,3))
 
+plt.plot(maxwellian_shm.xvals,maxwellian_shm.pdf,label='Maxwellian',color='grey')
+plt.plot(shm.xvals,shm.pdf,label='SHM',color='black')
+plt.xlabel('velocity (km/s)')
+plt.ylabel('pdf')
+plt.legend()
 
+plt.tight_layout()
+plt.savefig('testSHM.png')
 
-from similarity import censored
+# test the unwrapped functions
+if base_class_test == True:
 
-sample1 = np.array([30,24,11,19,27,11,24,28])
-observed1 = np.array([1,0,1,0,1,1,1,0])
-sample2 = np.array([3,23,17,8,10,5])
-observed2 = np.array([1,1,0,0,1,0])
+    # from similarity.empirical, make sure we can match distributions
+    from similarity import empirical
 
+    D1 = empirical.Distribution(vtot1)
+    D2 = empirical.Distribution(vtot1*1.0001)
 
+    empirical.match_distributions(D1,D2)
 
-censored.calculate_twosample(sample1,sample2,observed1,observed2,censoring='right',verbose=1)
+    # from similarity.ks, compute additional statistics from Hodges (1958)
+    from similarity import ks
 
+    K = ks.KS(D1.hcdf,D2.hcdf)
+
+    print(K.ks)
+    #K._significance()
+    print(K.alpha)
+    print('p1bar',K.p1_bar)
+
+    print(K._h_lam(0.07,imax=1000))
+    #print('hlam',K.p1_bar)

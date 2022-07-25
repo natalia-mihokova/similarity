@@ -44,8 +44,8 @@ class compare():
         K = ks.KS(D1.hcdf,D2.hcdf)
 
         # transfer to the compare namespace
-        self.ks = K.ks
-        self.ksDp = K.ksDp
-        self.ksDm = K.ksDm
+        self.ks     = K.ks
+        self.ksDp   = K.ksDp
+        self.ksDm   = K.ksDm
         self.p1_bar = K.p1_bar
-        
+        self.alpha  = K.alpha
