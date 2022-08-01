@@ -37,9 +37,16 @@ from scipy.special import erf,gamma,gammainc, gammaincc
 
 
 class Logistic():
-    """the logistic distribution
-    the pdf is often used in neural nets
-    https://en.wikipedia.org/wiki/Logistic_distribution
+    """
+    The Logistic Distribution
+    
+    With its shape the distribution resebles the Gaussian distribution, but it 
+    has heavier tails. Its pdf is often used in neural nets.
+    
+        Methods:
+    __init__
+    _logistic_pdf() - computes the probability density function of the Logistic distribution
+    _logistic_cdf() - computes the cumulative density function of the Logistic distribution
     """
     def __init__(self,xvals,mu=0.,s=1.):
         self.xvals = xvals
@@ -195,9 +202,15 @@ class Gaussian():
 
 class Lognormal():
     """
-    the lognormal distribution.
-    only defined for x>0!
-    https://en.wikipedia.org/wiki/Log-normal_distribution
+    The lognormal distribution.
+    
+    Probability of a random variable whose logarithm is normally distributed.
+    It is only defined for x>0!
+    
+        Methods:
+    __init__
+    _lognormal_pdf - computes the probability density function of the Lognormal distribution
+    _lognormal_cdf - computes the cumulative density function of the Lognormal distribution
     """
     def __init__(self,xvals,mu=0.,sigma=1.):
 
@@ -221,8 +234,16 @@ class Lognormal():
 
 
 class Maxwellian():
-    """The Maxwellian distribution.
-    enforce samples > 0.
+    """
+    The Maxwell-Boltzamnn distribution.
+    
+    Used to describe particle speeds in ideal gases. 
+    Enforce samples > 0.
+    
+        Methods:
+    __init__
+    _maxwellian_pdf - computes the probability density function of the Maxwellian
+    _maxwellian_cdf - computes the cumulative density function of the Maxwellian
     """
     def __init__(self,xvals,sigma=1.):
 
@@ -242,9 +263,17 @@ class Maxwellian():
 
 
 class MultiGaussian():
-
+    """
+    Multivariate Gaussian distribution
+    
+    A generalisation of the Gaussian distribution to higher dimensions. 
+    
+        Methods:
+    __init__
+    _trivariate_gaussian_pdf - computes the pdf of a trivariate Gaussian distribution
+    _make_cdf - computes the cumulative density function
+    """
     def __init__(self,xvals):
-
         self.xvals = xvals
 
     def trivariate_gaussian_pdf(self,sigma,cen1=0.,cen2=0.,cen3=0.):
