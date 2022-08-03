@@ -67,7 +67,7 @@ class Distribution():
         make a very quick 1d pdf, with weights
         """
         vals = np.zeros_like(self.xbins)
-        
+
         for b in range(0,self.xbins.size):
             if b==self.xbins.size-1:
                 w = np.where( (self.xvalues>self.xbins[b]) & (self.xvalues<=self.xbins[b]+self.dx))[0]
@@ -92,17 +92,17 @@ class Distribution():
             else:
                 w = np.where((self.xvalues<=self.xcbins[b+1]))[0]
             vals[b] = np.nansum(self.weights[w])
-            
+
         # normalise the area to one
         norm = np.nanmax(vals)
-        
+
         self.cdf = vals/norm
 
 
     def _un_weighted_cdf(self):
         """make an unweighted cdf, with full resolution"""
         self.vsort = self.yvalues[self.yvalues.argsort()]
-        self.wsort = np.cumsum(self.weights[self.yvalues.argsort()])/np.nansum(self.weights)    
+        self.wsort = np.cumsum(self.weights[self.yvalues.argsort()])/np.nansum(self.weights)
 
 
     def _interpolate_to_grid(self,grid):
@@ -116,21 +116,22 @@ class Distribution():
 
 def match_distributions(Distribution1,Distribution2,spacing=-1.,verbose=0):
     """create a uniform grid
-    
+
     spacing sets the km/s sampling. 1 km/s is a good default.
     """
-    
+
     if spacing < 0:
         spacing = np.nanmax([Distribution1.dcx,Distribution2.dcx])
         if verbose: print('similarity.empirical.match_distributions: spacing=',spacing)
-    
+
+    # check for overlaps: if none, we can't use this!
+    if (np.nanmax(Distribution1.xbins) < np.nanmin(Distribution2.xbins)) | (np.nanmax(Distribution2.xbins) < np.nanmin(Distribution1.xbins)):
+        print('similarity.empirical.match_distributions: there is no overlap in these samples!')
+
+
     xnew = np.arange(np.nanmax([np.nanmin(Distribution1.xbins),np.nanmin(Distribution2.xbins)]),
                      np.nanmin([np.nanmax(Distribution1.xbins),np.nanmax(Distribution2.xbins)]),
                      spacing)
-    
+
     Distribution1._interpolate_to_grid(xnew)
     Distribution2._interpolate_to_grid(xnew)
-    
-
-
-

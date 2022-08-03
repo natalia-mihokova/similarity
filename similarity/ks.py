@@ -2,7 +2,7 @@
 the KS test driver
 
 Read the introduction of Hodges (1958), "The significance probability of the Smirnov two-sample test"
-P1 is the significance of the 
+P1 is the significance of the
 
 The Kolmogorov (1933) - Smirnov (1939) test is a rank-order test of a two-sample problem,
 where one sample may be assumed to be significantly larger than the other (or not!).
@@ -19,7 +19,7 @@ When has a distribution strayed too far from the other such that they cannot be 
 Follow Section 4 of Hodges for nearly equal sample sizes.
 
 See also Chapter 26 of DasGupta (2008), Aymptotic Theory of Statistics
-Much of the theory here is built on the Empirical Distribution Function (EDF) 
+Much of the theory here is built on the Empirical Distribution Function (EDF)
 
 
 One must map the KS statistic to a P value, using a KS distribution.
@@ -47,15 +47,27 @@ class KS():
     def __init__(self,y1,y2):
 
         n1,n2 = len(y1),len(y2)
-    
+
         if n1 != n2:
-            print('mismatched sizes!');return
+            print('similarity.ks.KS: mismatched sizes!');return
 
         self.y1 = y1
         self.y2 = y2
 
         self.n1 = n1
         self.n2 = n2
+
+        # hard check for bad samples
+        #print("ks.KS: n1={}, n2={}".format(self.n1,self.n2))
+        if ((self.n1 == 0) | (self.n2==0)):
+            print("similarity.ks.KS: invalid samples.")
+            self.ks     = np.nan
+            self.p1_bar = np.nan
+            self.ksDp   = np.nan
+            self.ksDm   = np.nan
+            self.alpha  = np.nan
+            self.kz     = np.nan
+            return
 
         # compute all statistics
         self._compute_ks()     # two-sided test
@@ -65,7 +77,7 @@ class KS():
 
     def _compute_ks(self):
         """compute the formal two-sided KS test
-    
+
         see https://www.itl.nist.gov/div898/handbook/eda/section3/eda35g.htm
 
         in Hodges, this is 'D'.
@@ -79,12 +91,12 @@ class KS():
             testval = np.nanmax([self.y1[i]-self.y2[i-1],self.y2[i]-self.y1[i]])
             if testval > ks:
                 ks = testval
-            
+
         self.ks = ks
 
     def _compute_ks_one(self):
         """compute the formal one-sided KS test
-    
+
         in Hodges, this is 'D+' and 'D-'.
 
 
@@ -98,7 +110,7 @@ class KS():
             testval = np.nanmax([self.y1[i]-self.y2[i-1]])
             if testval > ks:
                 ks = testval
-            
+
         self.ksDp = ks
 
         ks = 0.
@@ -106,7 +118,7 @@ class KS():
             testval = np.nanmax([self.y2[i]-self.y1[i]])
             if testval > ks:
                 ks = testval
-            
+
         self.ksDm = ks
 
     def _p1_bar(self):
@@ -140,11 +152,11 @@ class KS():
         where
         c(alpha) = sqrt( -ln(alpha/2)/2 )
 
-        
+
         """
 
         self.alpha = 2.*np.exp(-2.*(self.ks/np.sqrt(2./self.n1))**2.)
-        
+
 
     def _smirnovs_variables(self):
         """
@@ -183,6 +195,3 @@ class KS():
         ivals = np.arange(1,imax,1)
         sumval = np.nansum( -1.**(ivals-1)*np.exp(-2*ivals*ivals*lam*lam))
         return (1.-2.*sumval)/np.sqrt(self.n1)
-
-    
-

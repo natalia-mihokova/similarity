@@ -14,8 +14,8 @@ base_class_test = False
 import similarity
 
 # identify the testing files
-d1 = pkg_resources.resource_filename('similarity','data/LMC.evolved.galactocentric.solar.system1_3eb.dat')
-d2 = pkg_resources.resource_filename('similarity','data/LMC.evolved.galactocentric.solar.system1_5eb.dat')
+d1 = pkg_resources.resource_filename('similarity','data/Donaldson/LMC.evolved.heliocentric.solar.system1_3eb.dat')
+d2 = pkg_resources.resource_filename('similarity','data/Donaldson/MW.evolved.heliocentric.solar.system1_5eb.dat')
 
 # read in the models, which are 6d positions of dark matter particles in the solar neighbourhood
 model1 = np.genfromtxt(d1,delimiter=';',skip_header=1)
@@ -55,6 +55,7 @@ print('Uncertainty from subsampling distribution 1:',C.uncertainty_subsample)
 C = calibrate.SingleTest(vtot2)
 print('Uncertainty from subsampling distribution 2:',C.uncertainty_subsample)
 # WARNING: these values are not repeatable. We might need to consider even more samples
+
 
 # uncertainties intrinsic to two distributions
 C = calibrate.DoubleTest(vtot1,vtot2,verbose=1)

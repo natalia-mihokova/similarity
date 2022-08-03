@@ -32,6 +32,6 @@ setup(name='similarity',
       #package_dir = {'similarity/',''},
       #use_scm_version={'write_to': os.path.join('similarity', 'version.py'),'write_to_template': VERSION_TEMPLATE},
       include_package_data=True,
-      package_data = { "": ["*.txt","data/*.dat"]},
+      package_data = { "": ["*.txt","data/*/*.dat"]},
       packages=['similarity'])
 #      ext_modules=get_extensions())
