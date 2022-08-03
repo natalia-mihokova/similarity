@@ -14,12 +14,13 @@ base_class_test = False
 import similarity
 
 # identify the testing files
-d1 = pkg_resources.resource_filename('similarity','data/Donaldson/LMC.evolved.heliocentric.solar.system1_3eb.dat')
-d2 = pkg_resources.resource_filename('similarity','data/Donaldson/MW.evolved.heliocentric.solar.system1_5eb.dat')
+d1 = pkg_resources.resource_filename('similarity','data/Donaldson/MW.evolved.heliocentric.solar.system1_3eb.dat')
+d2 = pkg_resources.resource_filename('similarity','data/FIRE/DMm12f.sn0.2kpc.txt')
 
 # read in the models, which are 6d positions of dark matter particles in the solar neighbourhood
 model1 = np.genfromtxt(d1,delimiter=';',skip_header=1)
 model2 = np.genfromtxt(d2,delimiter=';',skip_header=1)
+#model2 = np.genfromtxt(d2,skip_header=1)
 
 # make speed distributions
 vtot1 = np.sqrt(model1[:,3]*model1[:,3] + model1[:,4]*model1[:,4] + model1[:,5]*model1[:,5])

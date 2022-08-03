@@ -28,10 +28,10 @@ except Exception:
 """.lstrip()
 
 setup(name='similarity',
-      version='0.1.2',
+      version='0.1.3',
       #package_dir = {'similarity/',''},
       #use_scm_version={'write_to': os.path.join('similarity', 'version.py'),'write_to_template': VERSION_TEMPLATE},
       include_package_data=True,
-      package_data = { "": ["*.txt","data/*/*.dat"]},
+      package_data = { "": ["*.txt","data/*/*.dat","data/*/*.txt"]},
       packages=['similarity'])
 #      ext_modules=get_extensions())
