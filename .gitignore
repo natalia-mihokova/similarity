@@ -1,3 +1,7 @@
+# A couple extra data files
+similarity/data/FIRE/DMm12m*
+similarity/data/FIRE/DMm12i*
+
 # Compiled files
 *.py[cod]
 *.a
