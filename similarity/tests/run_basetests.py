@@ -67,6 +67,7 @@ print('Uncertainty from constructing matched CDFs:',C.uncertainty_spacing)
 # test the hypothesis that the distributions might just be shifted relative to each other:
 # what is the minimum KS value we can get simply by shifting?
 print('Minimum KS value when shifting CDFs:',C.uncertainty_shifting)
+print('Best velocity shift (add to vtot2 for most similar distributions):',C.optimal_shift)
 
 
 

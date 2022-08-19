@@ -136,7 +136,7 @@ class DoubleTest():
         ks_values  = np.zeros(shift_vals.size)
 
         for indx,shift in enumerate(shift_vals):
-            # shift all values of D2 relative to D1
+            # shift all values of D2 relative to D1 : one could also consider a multiplicative factor?
             D2s = empirical.Distribution(self.y2 - shift)
             empirical.match_distributions(self.D1,D2s)
 
@@ -151,3 +151,7 @@ class DoubleTest():
             ks_values[indx] = K.ks
 
         self.uncertainty_shifting = np.nanmin(ks_values)
+
+        # get the value of the best bulk shift
+        best_shift = np.nanargmin(ks_values)
+        self.optimal_shift = -shift_vals[best_shift]
